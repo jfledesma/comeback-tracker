@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comeback Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--card:#FFFFFF;--ink:#000000;--sub:#666666;--line:#E4E4E4;--acc:#FC5200;--field:#F4F4F4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111111;--card:#121212;--ink:#FFFFFF;--sub:#9A9A9A;--line:#2C2C2C;--field:#1B1B1B}}
+:root[data-theme="dark"]{--bg:#111111;--card:#121212;--ink:#FFFFFF;--sub:#9A9A9A;--line:#2C2C2C;--field:#1B1B1B}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo","Helvetica Neue",Arial,sans-serif;padding:16px 14px 48px;max-width:560px;margin-inline:auto}
+.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--sub)}
+.big{font-weight:900;letter-spacing:-.03em;line-height:.95}
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:14px}
+.top b{font-weight:900;font-size:20px;letter-spacing:-.02em;text-transform:uppercase}
+.top b i{color:var(--acc);font-style:normal}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:12px}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.phase{font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.02em}
+.bar{height:6px;background:var(--line);margin:8px 0 16px}
+.bar>div{height:100%;background:var(--acc)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats .big{font-size:40px;margin-top:4px}
+.stats small{font-size:12px;font-weight:800;color:var(--sub)}
+.flag{margin-top:14px;background:var(--acc);color:#fff;padding:10px 12px;border-radius:4px;font-size:13px;font-weight:600}
+.seg{display:flex;border:1px solid var(--ink);border-radius:4px;overflow:hidden}
+.seg button,.alt{margin:0;width:auto;padding:6px 10px;border:0;border-radius:0;background:transparent;color:var(--ink);font:800 11px "Archivo",sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.alt{border:1px solid var(--ink);border-radius:4px;padding:10px 12px;width:100%;margin-top:10px}
+.alt.arm{background:var(--acc);border-color:var(--acc);color:#fff}
+.wrow{display:flex;gap:24px;align-items:flex-end;margin-bottom:10px}
+.wrow .big{font-size:64px}
+.wrow .big span{font-size:18px;color:var(--sub);font-weight:800;letter-spacing:0}
+.d{font-weight:900;font-size:24px;letter-spacing:-.02em}
+svg{display:block;width:100%;height:auto}
+.empty{color:var(--sub);font-size:12px;padding:10px 0;text-transform:uppercase;letter-spacing:.08em}
+label{display:block;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px 10px;border:1px solid var(--line);border-radius:4px;background:var(--field);color:var(--ink);font:700 16px "Archivo",sans-serif}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.cta{margin-top:16px;width:100%;padding:15px;border:0;border-radius:4px;background:var(--acc);color:#fff;font:900 14px "Archivo",sans-serif;text-transform:uppercase;letter-spacing:.12em}
+.cta:active{opacity:.85}
+.note{margin-top:8px;font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;min-height:14px}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .big{font-size:30px;text-align:right}
+.row .big small{font-size:11px;color:var(--sub);font-weight:800;letter-spacing:.08em}
+.t{font-weight:800;font-size:13px;text-transform:uppercase}
+.tags{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.p{font-size:11px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:3px;border:1px solid var(--line);color:var(--sub)}
+.p1{border-color:var(--acc);color:var(--acc)}
+.p2{background:var(--acc);border-color:var(--acc);color:#fff}
+.dt{font-weight:900;font-size:13px;line-height:1.1}
+.dt span{display:block;color:var(--sub);font-weight:600;font-size:11px}
+.bf{fill:var(--ink)}.bt{fill:var(--acc)}.ax{fill:var(--sub);font:600 9px "Archivo",sans-serif;letter-spacing:.08em}
+.ln{fill:none;stroke:var(--acc);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.dot{fill:var(--acc)}
+</style>
+</head>
+<body>
+<script type="application/json" id="state-data">{"entries":[]}</script>
+
+<div class="top"><b>Comeback<i>.</i></b><span class="lbl" id="today"></span></div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="phase"></span><span class="lbl" id="pct"></span></div>
+  <div class="phase" id="phase">—</div>
+  <div class="bar"><div id="bar" style="width:0%"></div></div>
+  <div class="stats">
+    <div><div class="lbl" data-i="streak"></div><div class="big" id="sStreak">0</div><small data-i="days"></small></div>
+    <div><div class="lbl" data-i="total"></div><div class="big" id="sMin">0</div><small data-i="min"></small></div>
+    <div><div class="lbl" data-i="sessions"></div><div class="big" id="sCnt">0</div><small data-i="logged"></small></div>
+  </div>
+  <div id="flag"></div>
+</div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="last7"></span><span class="lbl" id="wkTot"></span></div>
+  <svg viewBox="0 0 300 100" id="bars" role="img"></svg>
+</div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="bodyW"></span><div class="seg"><button id="uLb">LB</button><button id="uKg">KG</button></div></div>
+  <div class="wrow">
+    <div><div class="lbl" data-i="current"></div><div class="big" id="wNow">—<span></span></div></div>
+    <div><div class="lbl" data-i="change"></div><div class="d" id="wDelta">—</div></div>
+  </div>
+  <svg viewBox="0 0 300 80" id="wChart" role="img"></svg>
+  <div class="empty" id="wEmpty" data-i="w2"></div>
+</div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="log"></span></div>
+  <label class="lbl" data-i="date"></label><input type="date" id="f_date">
+  <div class="g2">
+    <div><label class="lbl" data-i="dur"></label><input type="number" inputmode="numeric" id="f_dur" placeholder="25"></div>
+    <div><label class="lbl" data-i="dist"></label><input type="number" inputmode="decimal" step="0.1" id="f_mi" placeholder="mi"></div>
+  </div>
+  <div class="g2">
+    <div><label class="lbl" data-i="type"></label><select id="f_type"></select></div>
+    <div><label class="lbl" data-i="rpe"></label><input type="number" inputmode="numeric" min="0" max="10" id="f_rpe" placeholder="0"></div>
+  </div>
+  <div class="g3">
+    <div><label class="lbl" data-i="ankD"></label><input type="number" inputmode="numeric" min="0" max="10" id="f_ad" placeholder="0"></div>
+    <div><label class="lbl" data-i="ankM"></label><input type="number" inputmode="numeric" min="0" max="10" id="f_am" placeholder="0"></div>
+    <div><label class="lbl" data-i="back"></label><input type="number" inputmode="numeric" min="0" max="10" id="f_bk" placeholder="0"></div>
+  </div>
+  <div class="g3">
+    <div><label class="lbl" id="wLbl"></label><input type="number" inputmode="decimal" step="0.1" id="f_w" placeholder="—"></div>
+    <div><label class="lbl" data-i="sleep"></label><input type="number" inputmode="decimal" step="0.5" id="f_sl" placeholder="8"></div>
+    <div><label class="lbl" data-i="str"></label><select id="f_st"><option value="N" data-i="no"></option><option value="Y" data-i="yes"></option></select></div>
+  </div>
+  <label class="lbl" data-i="notes"></label><textarea id="f_n" rows="2"></textarea>
+  <button class="cta" id="save" data-i="save"></button>
+  <div class="note" id="note"></div>
+</div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="hist"></span></div>
+  <div id="hist"></div>
+  <div class="empty" id="hEmpty" data-i="none"></div>
+</div>
+
+<div class="card">
+  <div class="hd"><span class="lbl" data-i="settings"></span></div>
+  <div class="hd"><span class="lbl" data-i="lang"></span><div class="seg" id="segLang"></div></div>
+  <div class="hd"><span class="lbl" data-i="theme"></span><div class="seg" id="segTheme"></div></div>
+  <label class="lbl" data-i="start"></label><input type="date" id="f_start">
+  <button class="alt" id="restart"></button>
+  <div class="note" data-i="keep"></div>
+  <label class="lbl" data-i="data"></label>
+  <textarea id="f_json" rows="2"></textarea>
+  <div class="g2"><button class="alt" id="exp" data-i="export"></button><button class="alt" id="imp" data-i="import"></button></div>
+</div>
+
+<script>
+const T={
+en:{phase:'Current phase',streak:'Streak',days:'DAYS',total:'Total time',min:'MIN',sessions:'Sessions',logged:'LOGGED',last7:'Minutes · last 7 days',bodyW:'Body weight',current:'Current',change:'Change',w2:'Log at least 2 weights to see the trend',log:'Log session',date:'Date',dur:'Duration (min)',dist:'Distance (opt.)',type:'Type',rpe:'RPE (0–10)',ankD:'Ankle during',ankM:'Ankle next AM',back:'Back',weight:'Weight',sleep:'Sleep (h)',str:'Strength',no:'NO',yes:'YES',notes:'Notes',save:'Save session',hist:'History',none:'No sessions logged',settings:'Settings',lang:'Language',theme:'Theme',start:'Plan start date',restart:'Restart phases from today',confirm:'Tap again to confirm restart',keep:'Restarting phases never deletes your tracking',data:'Backup / transfer data',export:'Export',import:'Import',auto:'Auto',light:'Light',dark:'Dark',saved:'Saved ✓',local:'Saved on this device',unsync:'Saved locally · not synced',ank:'ANK',bk:'BACK',and:' and ',ankle:'Ankle',backw:'Back',alert:'ALERT · ',alertTail:' pain ≥4 in several sessions. Reduce volume and check in with your PT.',exported:'Copied · paste it to import elsewhere',imported:'Imported ✓',bad:'Invalid data',before:'starts Sep 15',next:'2027 · Progression',
+ty:{rest:'Rest',easy:'Easy run',prog:'Strides',aero:'Aerobic',thr:'Threshold',long:'Long run',str:'Strength',cross:'Cross-training',walk:'Walk/jog'},
+ph:['Phase 0 · Medical & rehab','Phase 1 · Return to running','Phase 2 · Aerobic base','Phase 3 · Strength + aerobic','Phase 4 · Half-marathon prep','Phase 5 · Taper + race'],dl:'SMTWTFS',loc:'en'},
+es:{phase:'Fase actual',streak:'Racha',days:'DÍAS',total:'Tiempo total',min:'MIN',sessions:'Sesiones',logged:'REG.',last7:'Minutos · últimos 7 días',bodyW:'Peso corporal',current:'Actual',change:'Variación',w2:'Registra al menos 2 pesos para ver la tendencia',log:'Registrar sesión',date:'Fecha',dur:'Duración (min)',dist:'Distancia (opc.)',type:'Tipo',rpe:'RPE (0–10)',ankD:'Tobillo durante',ankM:'Tobillo mañana',back:'Espalda',weight:'Peso',sleep:'Sueño (h)',str:'Fuerza',no:'NO',yes:'SÍ',notes:'Notas',save:'Guardar sesión',hist:'Historial',none:'Sin sesiones registradas',settings:'Ajustes',lang:'Idioma',theme:'Tema',start:'Fecha de inicio del plan',restart:'Reiniciar fases desde hoy',confirm:'Toca otra vez para confirmar',keep:'Reiniciar fases nunca borra tu registro',data:'Copia / transferir datos',export:'Exportar',import:'Importar',auto:'Auto',light:'Claro',dark:'Oscuro',saved:'Guardado ✓',local:'Guardado en este dispositivo',unsync:'Guardado local · sin sincronizar',ank:'TOB',bk:'ESP',and:' y ',ankle:'Tobillo',backw:'Espalda',alert:'ALERTA · ',alertTail:' con dolor ≥4 en varias sesiones. Reduce volumen y consulta con tu fisio.',exported:'Copiado · pégalo para importar',imported:'Importado ✓',bad:'Datos inválidos',before:'inicia 15 sep',next:'2027 · Progresión',
+ty:{rest:'Descanso',easy:'Rodaje suave',prog:'Progresivos',aero:'Aeróbico',thr:'Umbral',long:'Tirada larga',str:'Fuerza',cross:'Cross-training',walk:'Caminar/trotar'},
+ph:['Fase 0 · Evaluación y rehab','Fase 1 · Vuelta a correr','Fase 2 · Base aeróbica','Fase 3 · Fuerza + aeróbico','Fase 4 · Prep. media maratón','Fase 5 · Taper + carrera'],dl:'DLMXJVS',loc:'es'}};
+const WK=[2,3,4,4,3,1];
+const $=id=>document.getElementById(id);
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+let S={entries:[]};
+try{S=JSON.parse($('state-data').textContent)||S}catch(e){}
+let art=null,armed=null;
+const L=()=>T[S.lang]||T.en;
+const toU=lb=>S.unit==='kg'?lb*0.45359237:lb;
+const fromU=v=>S.unit==='kg'?v/0.45359237:v;
+const sorted=()=>[...S.entries].sort((a,b)=>a.date<b.date?-1:1);
+function defaults(){S.entries=S.entries||[];S.unit=S.unit||'lb';S.lang=S.lang||'en';S.theme=S.theme||'auto';S.start=S.start||'2026-09-15'}
+
+function phase(){
+  const l=L(),st=new Date(S.start+'T00:00:00');const d=Math.floor((new Date()-st)/864e5);let c=0;
+  if(d<0)return{n:l.ph[0]+' · '+l.before,p:0};
+  for(let i=0;i<6;i++){const w=WK[i]*7;if(d<c+w)return{n:l.ph[i],p:Math.max(3,Math.round((d-c)/w*100))};c+=w}
+  return{n:l.next,p:100};
+}
+function streak(){
+  const set=new Set(S.entries.map(e=>e.date));let d=new Date();d.setHours(0,0,0,0);let s=0;
+  if(!set.has(iso(d)))d.setDate(d.getDate()-1);
+  while(set.has(iso(d))){s++;d.setDate(d.getDate()-1)}return s;
+}
+const pc=v=>{const n=Number(v)||0;return n>=5?'p2':n>=3?'p1':''};
+function seg(id,opts,cur,fn){$(id).innerHTML='';opts.forEach(([k,lab])=>{const b=document.createElement('button');b.textContent=lab;if(k===cur)b.className='on';b.onclick=()=>fn(k);$(id).appendChild(b)})}
+
+function render(){
+  const l=L();
+  document.documentElement.lang=S.lang;
+  if(S.theme==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',S.theme);
+  document.querySelectorAll('[data-i]').forEach(el=>el.textContent=l[el.dataset.i]);
+  const ts=$('f_type'),cv=ts.value||'easy';
+  ts.innerHTML=Object.keys(l.ty).map(k=>'<option value="'+k+'">'+l.ty[k]+'</option>').join('');ts.value=cv in l.ty?cv:'easy';
+  seg('segLang',[['en','EN'],['es','ES']],S.lang,k=>{S.lang=k;render();persist()});
+  seg('segTheme',[['auto',l.auto],['light',l.light],['dark',l.dark]],S.theme,k=>{S.theme=k;render();persist()});
+  $('f_start').value=S.start;
+  if(!armed)$('restart').textContent=l.restart;
+  $('wLbl').textContent=l.weight+' ('+S.unit+')';
+  $('today').textContent=new Date().toLocaleDateString(l.loc,{weekday:'short',day:'numeric',month:'short'}).toUpperCase();
+  const ph=phase();$('phase').textContent=ph.n;$('bar').style.width=ph.p+'%';$('pct').textContent=ph.p+'%';
+  const E=sorted();
+  $('sStreak').textContent=streak();
+  $('sMin').textContent=E.reduce((s,e)=>s+(Number(e.duration)||0),0);
+  $('sCnt').textContent=E.length;
+  const last=E.slice(-5);
+  const a=last.filter(e=>Number(e.ankleAM)>=4).length>=2,b=last.filter(e=>Number(e.back)>=4).length>=2;
+  $('flag').innerHTML=(a||b)?'<div class="flag">'+l.alert+(a?l.ankle:'')+(a&&b?l.and:'')+(b?l.backw:'')+l.alertTail+'</div>':'';
+  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push(d)}
+  const mins=days.map(d=>E.filter(e=>e.date===iso(d)).reduce((s,e)=>s+(Number(e.duration)||0),0));
+  const mx=Math.max(30,...mins);let h='';
+  mins.forEach((m,i)=>{const bw=300/7,x=i*bw+7,bh=Math.max(2,m/mx*66),y=76-bh,cx=x+(bw-14)/2;
+    h+='<rect class="'+(i===6?'bt':'bf')+'" x="'+x+'" y="'+y+'" width="'+(bw-14)+'" height="'+bh+'"/>';
+    if(m)h+='<text class="ax" x="'+cx+'" y="'+(y-4)+'" text-anchor="middle">'+m+'</text>';
+    h+='<text class="ax" x="'+cx+'" y="92" text-anchor="middle">'+l.dl[days[i].getDay()]+'</text>'});
+  $('bars').innerHTML=h;$('wkTot').textContent=mins.reduce((s,v)=>s+v,0)+' MIN';
+  const W=E.filter(e=>e.weight!==''&&e.weight!=null&&!isNaN(Number(e.weight)));
+  $('uLb').className=S.unit==='lb'?'on':'';$('uKg').className=S.unit==='kg'?'on':'';
+  if(W.length){
+    const cur=toU(Number(W[W.length-1].weight));
+    $('wNow').innerHTML=cur.toFixed(1)+'<span> '+S.unit.toUpperCase()+'</span>';
+    const dl=cur-toU(Number(W[0].weight));$('wDelta').textContent=(dl>0?'+':'')+dl.toFixed(1);
+  }else{$('wNow').innerHTML='—<span></span>';$('wDelta').textContent='—'}
+  const P=W.slice(-30);$('wEmpty').style.display=P.length>1?'none':'block';
+  if(P.length>1){
+    const v=P.map(e=>toU(Number(e.weight)));const lo=Math.min(...v),hi=Math.max(...v),r=(hi-lo)||1;
+    const pts=v.map((y,i)=>[8+i*(284/(v.length-1)),68-((y-lo)/r)*56]);
+    $('wChart').innerHTML='<polyline class="ln" points="'+pts.map(p=>p.join(',')).join(' ')+'"/>'+pts.map(p=>'<circle class="dot" cx="'+p[0]+'" cy="'+p[1]+'" r="3"/>').join('')+'<text class="ax" x="8" y="79">'+lo.toFixed(1)+'</text><text class="ax" x="292" y="79" text-anchor="end">'+hi.toFixed(1)+'</text>';
+  }else $('wChart').innerHTML='';
+  const H=[...E].reverse();
+  $('hist').innerHTML=H.map(e=>'<div class="row"><div class="dt">'+e.date.slice(8)+'<span>'+e.date.slice(5,7)+'</span></div><div><div class="t">'+(l.ty[e.type]||e.type)+(e.strength==='Y'?' + '+l.ty.str:'')+'</div><div class="tags"><span class="p '+pc(e.ankleAM)+'">'+l.ank+' '+(e.ankleAM||0)+'</span><span class="p '+pc(e.back)+'">'+l.bk+' '+(e.back||0)+'</span>'+(e.weight?'<span class="p">'+toU(Number(e.weight)).toFixed(1)+' '+S.unit.toUpperCase()+'</span>':'')+'</div></div><div class="big">'+(e.duration||'—')+' <small>MIN</small></div></div>').join('');
+  $('hEmpty').style.display=H.length?'none':'block';
+}
+function html(){
+  return '<!DOCTYPE html>\n'+document.documentElement.outerHTML.replace(/<script type="application\/json" id="state-data">[\s\S]*?<\/script>/,'<script type="application/json" id="state-data">'+JSON.stringify(S).replace(/</g,'\\u003c')+'<\/script>');
+}
+async function persist(){
+  const n=$('note'),l=L();
+  try{localStorage.setItem('comeback',JSON.stringify(S))}catch(e){}
+  if(!art){n.textContent=l.local;return}
+  try{await art.publish(html());n.textContent=l.saved}catch(e){n.textContent=l.unsync}
+}
+$('save').onclick=()=>{
+  const date=$('f_date').value||iso(new Date()),wv=$('f_w').value;
+  const e={date,duration:$('f_dur').value,miles:$('f_mi').value,type:$('f_type').value,rpe:$('f_rpe').value,ankleDuring:$('f_ad').value,ankleAM:$('f_am').value,back:$('f_bk').value,sleep:$('f_sl').value,weight:wv===''?'':fromU(Number(wv)).toFixed(2),strength:$('f_st').value,notes:$('f_n').value};
+  S.entries=S.entries.filter(x=>x.date!==date).concat([e]);render();persist();
+};
+$('uLb').onclick=()=>{S.unit='lb';render();persist()};
+$('uKg').onclick=()=>{S.unit='kg';render();persist()};
+$('f_start').onchange=e=>{if(e.target.value){S.start=e.target.value;render();persist()}};
+$('restart').onclick=()=>{
+  const b=$('restart');
+  if(!armed){b.classList.add('arm');b.textContent=L().confirm;armed=setTimeout(()=>{armed=null;b.classList.remove('arm');b.textContent=L().restart},4000);return}
+  clearTimeout(armed);armed=null;b.classList.remove('arm');S.start=iso(new Date());render();persist();
+};
+$('exp').onclick=async()=>{const j=JSON.stringify(S);$('f_json').value=j;try{await navigator.clipboard.writeText(j)}catch(e){$('f_json').select()}$('note').textContent=L().exported};
+$('imp').onclick=()=>{try{const d=JSON.parse($('f_json').value);if(!Array.isArray(d.entries))throw 0;S=Object.assign(S,d);defaults();render();persist();$('note').textContent=L().imported}catch(e){$('note').textContent=L().bad}};
+(async()=>{
+  try{art=await claude.use('artifact')}catch(e){art=null}
+  if(!art){try{const x=JSON.parse(localStorage.getItem('comeback')||'null');if(x&&x.entries)S=x}catch(e){}}
+  defaults();$('f_date').value=iso(new Date());render();
+})();
+</script>
+</body>
+</html>
